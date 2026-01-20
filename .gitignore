@@ -1,0 +1,9 @@
+# Ignore log files
+*.log
+
+# Ignore node modules
+node_modules/
+.terraform/
+.terraform*
+
+.DS_STORE
