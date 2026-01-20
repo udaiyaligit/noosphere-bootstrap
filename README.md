@@ -1,7 +1,6 @@
 # DevOps/Platform Engineer - Technical Assessment
 
 **Role level:** Mid-Level Platform Engineer
-**Estimated time:** 2–3 hours
 
 ## Overview
 
