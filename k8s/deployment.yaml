@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: apí-deployment
+  name: api-deployment
   namespace: devops-tech-test
   labels:
-    app: tech-test-apí
+    app: tech-test-api
 spec:
   replicas: 1
   selector:
@@ -13,14 +13,14 @@ spec:
   template:
     metadata:
       labels:
-        app: devops-tech-test-api-v1
+        app: devops-tech-test-app
     spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
       containers:
         - name: api
-          image:
+          image: repo/my-api:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
@@ -49,4 +49,4 @@ spec:
               memory: "256Mi"
           env:
             - name: NODE_ENV
-              value:
+              value: dev

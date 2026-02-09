@@ -5,12 +5,12 @@ variable "region" {
 
 variable "aws_access_key" {
   type    = string
-  default = "test"
+  sensitive = true
 }
 
 variable "aws_secret_key" {
   type    = string
-  default = "My-VerySecure10x-Secret"
+  sensitive = true
 }
 
 variable "localstack_endpoint" {
@@ -37,6 +37,11 @@ variable "db_name" {
 variable "db_username" {
   type    = string
   default = "appuser"
+}
+
+variable "db_password" {
+  type      = string
+  sensitive = true
 }
 
 variable "instances" {

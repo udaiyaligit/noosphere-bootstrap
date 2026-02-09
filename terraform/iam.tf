@@ -21,7 +21,7 @@ resource "aws_iam_policy" "ssm_read" {
       {
         Action   = ["ssm:GetParameter", "ssm:GetParameters", "ssm:GetParametersByPath"],
         Effect   = "Allow",
-        Resource = "*"
+        Resource = "arn:aws:ssm:${var.region}:*:parameter/${var.environment}/${var.project}/db_password"
       }
     ]
   })

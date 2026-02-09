@@ -5,7 +5,7 @@ metadata:
   namespace: devops-tech-test
 spec:
   selector:
-    app: devops-tech-test-api
+    app: devops-tech-test-app
   ports:
     - protocol: TCP
       port: 80
