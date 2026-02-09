@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: api
-          image: repo/my-api:latest
+          image: 
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
@@ -49,4 +49,4 @@ spec:
               memory: "256Mi"
           env:
             - name: NODE_ENV
-              value: dev
+              value: 

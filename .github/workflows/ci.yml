@@ -4,8 +4,10 @@ on:
   pull_request:
     branches: [main]
 
+  push:
+    branches: [main]
+
 env:
-  REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
@@ -15,27 +17,58 @@ jobs:
       contents: read
       packages: write
 
+    outputs:
+      image_sha: ${{ steps.set-sha.outputs.tag }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Docker image (local)
+      - name: set image sha tag
+        id: set-sha
+        run: echo "tag=${GITHUB_SHA}" >> $GITHUB_OUTPUT
+
+      - name: build docker image with sha tag
         run: |
-          docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} .
+          docker build -t ${{ env.IMAGE_NAME }}:${{ steps.set-sha.outputs.tag }} .
+
+  semver-tag:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+
+    outputs:
+      semver: ${{ steps.version.outputs.new_tag }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: create semantic version tag
+        id: version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   security-scan:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, semver-tag]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build image for scanning
+      - name: build image with semver tag
         run: |
-          docker build -t ${{ env.IMAGE_NAME }}:scan .
+          docker build -t ${{ env.IMAGE_NAME }}:${{ needs.semver-tag.outputs.semver }} .
 
-      - name: Placeholder - Security scan
+      - name: install grype
         run: |
-          echo "TODO: Replace this step with Grype scanning"
-          echo "The scan should fail the build on HIGH or CRITICAL vulnerabilities"
+          curl -sSfL https://get.anchore.io/grype | sh -s -- -b /usr/local/bin
+          grype --version
+
+      - name: run grype security scan
+        run: |
+          grype ${{ env.IMAGE_NAME }}:${{ needs.semver-tag.outputs.semver }} --fail-on high --only-fixed --output table
