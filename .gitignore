@@ -1,9 +1,14 @@
-# Ignore log files
+# Logs
 *.log
 
-# Ignore node modules
+# Node
 node_modules/
+
+# Terraform
 .terraform/
 .terraform*
+*.tfstate
+*.tfstate.backup
 
-.DS_STORE
+# OS
+.DS_Store
